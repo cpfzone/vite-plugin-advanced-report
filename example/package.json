@@ -1,0 +1,18 @@
+{
+  "name": "vite-plugin-advanced-report-example",
+  "version": "1.0.0",
+  "description": "Example project for vite-plugin-advanced-report",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.2.0",
+    "vite": "^4.4.0",
+    "typescript": "^5.0.0"
+  }
+} 
