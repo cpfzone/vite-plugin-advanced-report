@@ -81,8 +81,23 @@ export default function advancedReport(options: PluginOptions = {}): Plugin {
         return moduleCache.get(id);
       }
 
-      // 跳过某些文件类型
+      // 跳过某些文件类型，避免干扰正常构建
       if (id.includes('node_modules') && !id.includes('.css')) {
+        return null;
+      }
+
+      // 跳过HTML报告文件，避免重复处理
+      if (id.includes('build-report.html')) {
+        return null;
+      }
+
+      // 跳过插件自身的文件，避免自引用
+      if (id.includes('vite-plugin-advanced-report')) {
+        return null;
+      }
+
+      // 跳过虚拟模块和特殊文件
+      if (id.startsWith('\0') || id.includes('virtual:') || id.includes('__vite_')) {
         return null;
       }
 

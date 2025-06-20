@@ -60,21 +60,25 @@ export function generateOptimizationTips(modules: ModuleStat[]): string[] {
   // 检查第三方库性能
   const slowNodeModules = modules.filter(m => 
     m.id.includes('node_modules') && m.duration > 100
-  );
+  ).sort((a, b) => b.duration - a.duration);
+
   if (slowNodeModules.length > 0) {
-    tips.push(`🚨 发现 ${slowNodeModules.length} 个处理较慢的第三方库，建议检查依赖版本`);
+    const topSlow = slowNodeModules.slice(0, 3).map(m => normalizePath(m.id).split('/node_modules/')[1]);
+    tips.push(`🚨 发现 ${slowNodeModules.length} 个处理较慢的第三方库，例如: ${topSlow.join(', ')}。建议检查其版本或寻找替代方案。`);
   }
 
   // 检查大文件
-  const largeFiles = modules.filter(m => m.size > 100000);
+  const largeFiles = modules.filter(m => m.size > 100000).sort((a, b) => b.size - a.size); // 100KB
   if (largeFiles.length > 0) {
-    tips.push(`💡 发现 ${largeFiles.length} 个大文件，建议进行代码分割`);
+    const topLarge = largeFiles.slice(0, 3).map(m => normalizePath(m.id));
+    tips.push(`💡 发现 ${largeFiles.length} 个大于100KB的大文件，例如: ${topLarge.join(', ')}。建议进行代码分割。`);
   }
 
   // 检查超慢模块
-  const verySlowModules = modules.filter(m => m.duration > 1000);
+  const verySlowModules = modules.filter(m => m.duration > 1000).sort((a, b) => b.duration - a.duration);
   if (verySlowModules.length > 0) {
-    tips.push(`⚠️ 发现 ${verySlowModules.length} 个处理时间超过1秒的模块，需要重点优化`);
+    const topVerySlow = verySlowModules.slice(0, 3).map(m => normalizePath(m.id));
+    tips.push(`⚠️ 发现 ${verySlowModules.length} 个处理超过1秒的模块，例如: ${topVerySlow.join(', ')}。需要重点优化。`);
   }
 
   return tips;
